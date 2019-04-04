@@ -5,6 +5,11 @@ import java.sql.DriverManager;
 
 public class ConexionBBDD {
 
+	/**
+	 * Realiza la conexion a la base de datos con los parametros de un txt
+	 * @param testos El txt con el nombre de la BD, usuario y contrasenia
+	 * @return La conecion
+	 */
 	public Connection conectarBD(Textos testos) {
 		Connection conexion = null;
 		

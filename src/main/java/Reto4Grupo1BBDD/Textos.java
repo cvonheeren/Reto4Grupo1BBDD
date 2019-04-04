@@ -5,6 +5,11 @@ import java.io.FileReader;
 
 public class Textos {
 
+	/**
+	 * Separa los datos dados en un .txt y los mete en un  array de strings
+	 * @param datosBD El .txt
+	 * @return Devuelve un array con los datos url, database, user, password
+	 */
 	public String[] cogerDatosDeFichero(String datosBD) {
 		String[] datos = new String[4];
 		FileReader fileReader = null;
