@@ -3,6 +3,10 @@ package Reto4Grupo1BBDD;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 public class Textos {
 
 	/**
@@ -36,6 +40,8 @@ public class Textos {
 		} catch (Exception e) {
 			//Implementar logger?
 			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		} finally {
 			try {
 				fileReader.close();

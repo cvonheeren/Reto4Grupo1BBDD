@@ -13,13 +13,13 @@ public class ConexionBBDD {
 	public Connection conectarBD(Textos testos) {
 		Connection conexion = null;
 		
-		final String NombreFichero = "datosBD.txt";
+		final String NombreFichero = System.getProperty("user.dir") + "\\datosBD.txt";
 		String[] datos = testos.cogerDatosDeFichero(NombreFichero);
 		
-		String url = "jdbc:mysql://" + datos[0] + "/" + datos[1];
+		String url = "jdbc:mysql://" + datos[0] + "/" + datos[1] + "?useTimezone=true&serverTimezone=UTC";
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			conexion = DriverManager.getConnection(url, datos[2], datos[3]);
 		} catch (Exception e) {
 			//Implementar logger?
