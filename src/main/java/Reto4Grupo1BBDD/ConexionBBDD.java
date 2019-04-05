@@ -12,7 +12,7 @@ public class ConexionBBDD {
 	 */
 	public Connection conectarBD(Textos testos) {
 		Connection conexion = null;
-		
+
 		final String NombreFichero = System.getProperty("user.dir") + "\\datosBD.txt";
 		String[] datos = testos.cogerDatosDeFichero(NombreFichero);
 		
