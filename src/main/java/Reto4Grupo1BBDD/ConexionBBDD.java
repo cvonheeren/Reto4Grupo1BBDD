@@ -3,6 +3,9 @@ package Reto4Grupo1BBDD;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 public class ConexionBBDD {
 
 	/**
@@ -21,9 +24,12 @@ public class ConexionBBDD {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conexion = DriverManager.getConnection(url, datos[2], datos[3]);
+			
 		} catch (Exception e) {
 			//Implementar logger?
 			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return conexion;
 	}
