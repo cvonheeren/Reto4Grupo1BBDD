@@ -12,7 +12,7 @@ tmp/
 *.swp
 *~.nib
 local.properties
-# .settings/
+.settings/
 .loadpath
 .recommenders
 .recommenders/
@@ -20,10 +20,10 @@ local.properties
 
 ### Eclipse Patch ###
 # Eclipse Core
-# .project
+.project
 
 # # JDT-specific (Eclipse Java Development Tools)
-# .classpath
+.classpath
 
 ### Java ###
 # Compiled class file
