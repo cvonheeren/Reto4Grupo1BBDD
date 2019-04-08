@@ -33,24 +33,28 @@ public class ModificarBBDD {
 	 * @param query Consulta a realizar de tipo INSERT
 	 * @return boolean true si se ha realizado la insercion con exito, false si no
 	 */
-	public boolean insertarDatosBD(Connection con, String query) {
+	public int insertarDatosBD(Connection con, String query) {
 		Statement st;
+		int codReserva;
 		try {
 			st = con.createStatement();
 		} catch (SQLException e1) {
 			//Implementar logger?
 			e1.printStackTrace();
-			return false;
+			return -1;
 		}
 		
 		try {
-			st.executeUpdate(query);
+			st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			ResultSet  result = st.getGeneratedKeys();
+			result.next();
+		    codReserva = result.getInt(1);
 		} catch (Exception e){
 			//Implementar logger?
 			System.out.println(e.getMessage());
-			return false;
+			return -1;
 		}
 
-		return true;
+		return codReserva;
 	}
 }
