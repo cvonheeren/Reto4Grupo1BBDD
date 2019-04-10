@@ -19,7 +19,10 @@ public class ModificarBBDD {
 		conectar();
 	}
 	
-	private Connection conectar() {
+	/**
+	 * Pide una conexion al pool de conexiones y la almacena en el atributo 'conn'
+	 */
+	private void conectar() {
 		try {
 			conn = pool.getConnection();
 		} catch (SQLException e) {
@@ -28,109 +31,86 @@ public class ModificarBBDD {
 			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
-		return conn;
 	}
 	
+	/**
+	 * Obtiene los alojamientos ubicados en la ciudad especificada
+	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
 	public ResultSet cargarListaAlojamientos(String ciudad) {
-		
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM HOTEL WHERE NOMBRE LIKE UPPER('%" + ciudad + "%') OR UBICACION LIKE UPPER('%" + ciudad + "%')";
-		
+		String query = "SELECT * FROM HOTEL WHERE NOMBRE LIKE UPPER(?) OR UBICACION LIKE UPPER(?)";
 		try {
 			stmt = conn.prepareStatement(query);
+			stmt.setString(1, "%" + ciudad + "%");
+			stmt.setString(2, "%" + ciudad + "%");
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-	
 		return result;
 	}
 	
+	/**
+	 * Obtiene una lista con los nombres de todas las ciudades
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
 	public ResultSet cargarListaDestinos() {
-		
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT DISTINCT UBICACION FROM HOTEL ORDER BY UBICACION ASC;";
-		
+		String query = "SELECT DISTINCT UBICACION FROM HOTEL ORDER BY UBICACION ASC";
 		try {
 			stmt = conn.prepareStatement(query);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		
-		return result;
-	}
-	
-	public ResultSet cargarCliente(String dniUsuario) {
-		
-		PreparedStatement stmt = null;
-		ResultSet result = null;
-		String query = "select * from clientes where dni = " + dniUsuario;
-		
-		try {
-			stmt = conn.prepareStatement(query);
-			
-			result = stmt.executeQuery();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		 
 		return result;
 	}
 	
 	/**
-	 * Metodo para insertar valores en una tabla de la base de datos
-	 * @param con Conexion a la base de datos
-	 * @param query Consulta a realizar de tipo INSERT
-	 * @return boolean true si se ha realizado la insercion con exito, false si no
+	 * Obtiene el cliente correspondiente al dni y contrasena indicados
+	 * @param dniUsuario DNI que se quiere buscar
+	 * @param pass Contrasena que se quiere buscar
+	 * @return ResultSet resultado devuelto por la consulta
 	 */
-	public int insertarDatosBD(String query) {
-		Statement st;
-		int codReserva;
-		try {
-			st = conn.createStatement();
-		} catch (SQLException e1) {
-			//Implementar logger?
-			e1.printStackTrace();
-			return -1;
-		}
-		
-		try {
-			st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			ResultSet  result = st.getGeneratedKeys();
-			result.next();
-		    codReserva = result.getInt(1);
-		} catch (Exception e){
-			//Implementar logger?
-			System.out.println(e.getMessage());
-			return -1;
-		}
-
-		return codReserva;
-	}
-	
-	/**
-	 * Rellenar
-	 * @param dniUsuario
-	 * @param pass
-	 * @return
-	 */
-	public ResultSet cargarClienteyPass(String dniUsuario, String pass) {
-		
+	public ResultSet comprobarCliente(String dniUsuario, String pass) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "select * from clientes where dni = " + dniUsuario + "and contra = " + pass + ";";
-		
+		String query = "select * from clientes where dni = ? and contra = ?";
 		try {
 			stmt = conn.prepareStatement(query);
-			
+			stmt.setString(1, dniUsuario);
+			stmt.setString(2, pass);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		 
+		return result;
+	}
+	
+	/**
+	 * Inserta los valores de una reserva en la tabla 'reservas'
+	 * @param codHotel Codigo del hotel en el que se efectua la reserva
+	 * @param precio Precio de la reserva
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
+	public ResultSet insertarReserva(int codHotel, float precio) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "INSERT INTO RESERVAS (COD_HOTEL, PRECIO) values (?, ?)";
+		try {
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, codHotel);
+			stmt.setFloat(2, precio);
+			stmt.executeUpdate();
+			result = stmt.getGeneratedKeys();
+		} catch (SQLException e1) {
+			//Implementar logger?
+			e1.printStackTrace();
+		}
 		return result;
 	}
 }
