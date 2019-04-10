@@ -41,6 +41,7 @@ public class ModificarBBDD {
 		
 		try {
 			stmt = conn.prepareStatement(query);
+			
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -83,6 +84,35 @@ public class ModificarBBDD {
 			e.printStackTrace();
 		}
 		return ciudades;
+	}
+	
+	public ClienteBBDD cargarCliente(int dniUsuario) {
+		
+		ClienteBBDD cliente = null;
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "select * from clientes where dni = " + dniUsuario;
+		
+		try {
+			stmt = conn.prepareStatement(query);
+			
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			while (result.next()) {
+				String dni = result.getString("dni");
+				String nombre = result.getString("nombre");
+				String password = result.getString("password");
+				String direccion = result.getString("direccion");
+				cliente = new ClienteBBDD(dni, nombre, password, direccion);
+	        }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		return cliente;
 	}
 	
 	/**
