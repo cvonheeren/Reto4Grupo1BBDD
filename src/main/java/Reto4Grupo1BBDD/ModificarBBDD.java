@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -32,38 +31,24 @@ public class ModificarBBDD {
 		return conn;
 	}
 	
-	public ArrayList<AlojamientoBBDD> cargarListaAlojamientos(String ciudad) {
+	public ResultSet cargarListaAlojamientos(String ciudad) {
 		
-		ArrayList<AlojamientoBBDD> listaAlojamientos = new ArrayList<AlojamientoBBDD>();
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "SELECT * FROM HOTEL WHERE NOMBRE LIKE UPPER('%" + ciudad + "%') OR UBICACION LIKE UPPER('%" + ciudad + "%')";
 		
 		try {
 			stmt = conn.prepareStatement(query);
-			
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		
-		try {
-			while (result.next()) {
-				int cod_alojamiento = result.getInt("COD_HOTEL");
-				String ubicacion = result.getString("UBICACION");
-				String nombre = result.getString("NOMBRE");
-				//float precio = rs.getFloat("PRECIO");
-				listaAlojamientos.add(new AlojamientoBBDD(cod_alojamiento, nombre, ubicacion));
-	        }
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return listaAlojamientos;
+	
+		return result;
 	}
 	
-	public ArrayList<String> cargarListaDestinos() {
+	public ResultSet cargarListaDestinos() {
 		
-		ArrayList<String> ciudades = new ArrayList<String>();
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "SELECT DISTINCT UBICACION FROM HOTEL ORDER BY UBICACION ASC;";
@@ -75,20 +60,11 @@ public class ModificarBBDD {
 			e1.printStackTrace();
 		}
 		
-		try {
-			while (result.next()) {
-				String ubicacion = result.getString("UBICACION");
-				ciudades.add(ubicacion);
-	        }
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return ciudades;
+		return result;
 	}
 	
-	public ClienteBBDD cargarCliente(int dniUsuario) {
+	public ResultSet cargarCliente(String dniUsuario) {
 		
-		ClienteBBDD cliente = null;
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "select * from clientes where dni = " + dniUsuario;
@@ -100,19 +76,8 @@ public class ModificarBBDD {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		
-		try {
-			while (result.next()) {
-				String dni = result.getString("dni");
-				String nombre = result.getString("nombre");
-				String password = result.getString("password");
-				String direccion = result.getString("direccion");
-				cliente = new ClienteBBDD(dni, nombre, password, direccion);
-	        }
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} 
-		return cliente;
+		 
+		return result;
 	}
 	
 	/**
