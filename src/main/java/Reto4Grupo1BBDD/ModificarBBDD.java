@@ -71,7 +71,6 @@ public class ModificarBBDD {
 		
 		try {
 			stmt = conn.prepareStatement(query);
-			
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -86,26 +85,22 @@ public class ModificarBBDD {
 	 * @param query Consulta a realizar de tipo INSERT
 	 * @return boolean true si se ha realizado la insercion con exito, false si no
 	 */
-	public int insertarDatosBD(String query) {
-		Statement st;
-		int codReserva;
-		try {
-			st = conn.createStatement();
-		} catch (SQLException e1) {
-			//Implementar logger?
-			e1.printStackTrace();
-			return -1;
-		}
+	public int insertarReserva(int codHotel, float precio) {
+		ResultSet result = null;
+		Statement stmt = null;
+		int codReserva = -1;
+		
+		String query = "INSERT INTO RESERVAS (COD_HOTEL, PRECIO) values (" + codHotel + ", " + precio + ")";
 		
 		try {
-			st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			ResultSet  result = st.getGeneratedKeys();
+			stmt = conn.prepareStatement(query);
+			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			result = stmt.getGeneratedKeys();
 			result.next();
 		    codReserva = result.getInt(1);
 		} catch (Exception e){
 			//Implementar logger?
 			System.out.println(e.getMessage());
-			return -1;
 		}
 
 		return codReserva;
