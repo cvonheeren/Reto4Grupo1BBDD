@@ -105,4 +105,27 @@ public class ModificarBBDD {
 
 		return codReserva;
 	}
+	
+	/**
+	 * Rellenar
+	 * @param dniUsuario
+	 * @param pass
+	 * @return
+	 */
+	public ResultSet cargarClienteyPass(String dniUsuario, String pass) {
+		
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "select * from clientes where dni = " + dniUsuario + "and contra = " + pass + ";";
+		
+		try {
+			stmt = conn.prepareStatement(query);
+			
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		 
+		return result;
+	}
 }
