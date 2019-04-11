@@ -70,6 +70,19 @@ public class ModificarBBDD {
 		return result;
 	}
 	
+	public ResultSet cargarListaAlojamientos() {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "SELECT NOMBRE FROM HOTEL ORDER BY UBICACION ASC";
+		try {
+			stmt = conn.prepareStatement(query);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		return result;
+	}
+	
 	/**
 	 * Obtiene el cliente correspondiente al dni y contrasena indicados
 	 * @param dniUsuario DNI que se quiere buscar
