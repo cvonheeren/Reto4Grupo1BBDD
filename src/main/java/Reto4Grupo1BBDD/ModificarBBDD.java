@@ -34,18 +34,15 @@ public class ModificarBBDD {
 	}
 	
 	/**
-	 * Obtiene los alojamientos ubicados en la ciudad especificada
-	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
+	 * Obtiene una lista con los nombres de todas las ciudades
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarListaAlojamientos(String ciudad) {
+	public ResultSet cargarListaDestinos() {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM HOTEL WHERE NOMBRE LIKE UPPER(?) OR UBICACION LIKE UPPER(?)";
+		String query = "SELECT DISTINCT CIUDAD FROM ALOJAMIENTO, UBICACION WHERE ALOJAMIENTO.COD_UBICACION = UBICACION.COD_UBICACION ORDER BY CIUDAD ASC";
 		try {
 			stmt = conn.prepareStatement(query);
-			stmt.setString(1, "%" + ciudad + "%");
-			stmt.setString(2, "%" + ciudad + "%");
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -54,13 +51,33 @@ public class ModificarBBDD {
 	}
 	
 	/**
-	 * Obtiene una lista con los nombres de todas las ciudades
+	 * Obtiene los alojamientos ubicados en la ciudad especificada
+	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarListaDestinos() {
+	public ResultSet cargarListaAlojamientos(String busqueda) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT DISTINCT UBICACION FROM HOTEL ORDER BY UBICACION ASC";
+		String query = "SELECT * FROM ALOJAMIENTO, UBICACION WHERE ALOJAMIENTO.COD_UBICACION = UBICACION.COD_UBICACION AND (NOMBRE LIKE UPPER(?) OR CIUDAD LIKE ?)";
+		try {
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, "%" + busqueda + "%");
+			stmt.setString(2, "%" + busqueda + "%");
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * Obtiene los nombres de todos los alojamientos
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
+	public ResultSet cargarListaAlojamientos() {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "SELECT NOMBRE FROM ALOJAMIENTO";
 		try {
 			stmt = conn.prepareStatement(query);
 			result = stmt.executeQuery();
@@ -70,12 +87,18 @@ public class ModificarBBDD {
 		return result;
 	}
 	
-	public ResultSet cargarListaAlojamientos() {
+	/**
+	 * Obtiene las habitaciones del alojamiento indicado
+	 * @param codAlojamiento codigo del alojamiento del cual se quieren obtener las habitaciones
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
+	public ResultSet cargarListaHabitaciones(int codAlojamiento) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT NOMBRE FROM HOTEL ORDER BY UBICACION ASC";
+		String query = "SELECT * FROM ALOJAMIENTO_DORMITORIO WHERE COD_ALOJAMIENTO = ?";
 		try {
 			stmt = conn.prepareStatement(query);
+			stmt.setInt(1, codAlojamiento);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -92,7 +115,7 @@ public class ModificarBBDD {
 	public ResultSet comprobarCliente(String dniUsuario, String pass) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "select * from clientes where dni = ? and contra = ?";
+		String query = "SELECT * FROM CLIENTES WHERE DNI = ? AND CONTRA = ?";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, dniUsuario);
@@ -113,7 +136,7 @@ public class ModificarBBDD {
 	public ResultSet insertarReserva(int codHotel, float precio) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "INSERT INTO RESERVAS (COD_HOTEL, PRECIO) values (?, ?)";
+		String query = "INSERT INTO RESERVAS (COD_ALOJAMIENTO , PRECIO) VALUES (?, ?)";
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, codHotel);
