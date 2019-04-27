@@ -89,13 +89,38 @@ public class ModificarBBDD {
 	
 	/**
 	 * Obtiene las habitaciones del alojamiento indicado
-	 * @param codAlojamiento codigo del alojamiento del cual se quieren obtener las habitaciones
+	 * @param codAlojamiento codigo del alojamiento
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
 	public ResultSet cargarListaHabitaciones(int codAlojamiento) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM ALOJAMIENTO_DORMITORIO WHERE COD_ALOJAMIENTO = ?";
+		
+		// informacion de todos los dormitorios de un hotel
+		String query = "SELECT * FROM ALOJAMIENTO_DORMITORIO, DORMITORIOS WHERE ALOJAMIENTO_DORMITORIO.COD_DORMITORIO = DORMITORIOS.COD_DORMITORIO AND COD_ALOJAMIENTO = ?";		
+
+		try {
+			stmt = conn.prepareStatement(query);
+			stmt.setInt(1, codAlojamiento);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * Obtiene las habitaciones reservadas del alojamiento indicado
+	 * @param codAlojamiento codigo del alojamiento
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
+	public ResultSet cargarHabitacionesReservadas(int codAlojamiento) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		
+		// codigo y cantidad de los dormitorios reservados de un hotel
+		String query = "SELECT COD_DORMITORIO, CANTIDAD FROM RESERVA_DORMITORIO, RESERVAS WHERE RESERVA_DORMITORIO.COD_RESERVA = RESERVAS.COD_RESERVA AND COD_ALOJAMIENTO = ?";
+		
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setInt(1, codAlojamiento);
