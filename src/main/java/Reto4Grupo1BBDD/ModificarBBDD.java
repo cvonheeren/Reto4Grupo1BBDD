@@ -40,7 +40,7 @@ public class ModificarBBDD {
 	public ResultSet cargarListaDestinos() {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT DISTINCT CIUDAD FROM ALOJAMIENTO, UBICACION WHERE ALOJAMIENTO.COD_UBICACION = UBICACION.COD_UBICACION ORDER BY CIUDAD ASC";
+		String query = "SELECT DISTINCT UBICACIONES.NOMBRE FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION ORDER BY UBICACIONES.NOMBRE ASC";
 		try {
 			stmt = conn.prepareStatement(query);
 			result = stmt.executeQuery();
@@ -58,7 +58,7 @@ public class ModificarBBDD {
 	public ResultSet cargarListaAlojamientos(String busqueda) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM ALOJAMIENTO, UBICACION WHERE ALOJAMIENTO.COD_UBICACION = UBICACION.COD_UBICACION AND (NOMBRE LIKE UPPER(?) OR CIUDAD LIKE ?)";
+		String query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE ?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, "%" + busqueda + "%");
@@ -77,7 +77,7 @@ public class ModificarBBDD {
 	public ResultSet cargarListaAlojamientos() {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT NOMBRE FROM ALOJAMIENTO";
+		String query = "SELECT NOMBRE FROM ALOJAMIENTOS";
 		try {
 			stmt = conn.prepareStatement(query);
 			result = stmt.executeQuery();
@@ -136,7 +136,7 @@ public class ModificarBBDD {
 	public ResultSet insertarReserva(int codHotel, float precio) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "INSERT INTO RESERVAS (COD_ALOJAMIENTO , PRECIO) VALUES (?, ?)";
+		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_ALOJAMIENTO, PRECIO) VALUES (NULL, ?, ?)";
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, codHotel);
