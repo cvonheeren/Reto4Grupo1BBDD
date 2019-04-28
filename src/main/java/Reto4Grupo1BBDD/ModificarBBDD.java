@@ -1,6 +1,7 @@
 package Reto4Grupo1BBDD;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -109,21 +110,30 @@ public class ModificarBBDD {
 		return result;
 	}
 	
+	public ResultSet habDisponible(int codAlojamiento, int codHabitacion, Date fechaEntrada, Date fechaSalida) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		
+		return result;
+	}
+	
 	/**
 	 * Obtiene las habitaciones reservadas del alojamiento indicado
 	 * @param codAlojamiento codigo del alojamiento
 	 * @return ResultSet Resultado devuelto por la consulta
-	 */
-	public ResultSet cargarHabitacionesReservadas(int codAlojamiento) {
+	 */	
+	public ResultSet cargarHabitacionesReservadas(int codAlojamiento, Date fechaEntrada, Date fechaSalida) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		
 		// codigo y cantidad de los dormitorios reservados de un hotel
-		String query = "SELECT COD_DORMITORIO, CANTIDAD FROM RESERVA_DORMITORIO, RESERVAS WHERE RESERVA_DORMITORIO.COD_RESERVA = RESERVAS.COD_RESERVA AND COD_ALOJAMIENTO = ?";
+		String query = "SELECT COD_DORMITORIO, CANTIDAD FROM RESERVA_DORMITORIO, RESERVAS WHERE RESERVA_DORMITORIO.COD_RESERVA = RESERVAS.COD_RESERVA AND COD_ALOJAMIENTO = ? AND FECHAENTRADA <= ? AND FECHASALIDA >= ?";
 		
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setInt(1, codAlojamiento);
+			stmt.setDate(2, fechaSalida);
+			stmt.setDate(3, fechaEntrada);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
