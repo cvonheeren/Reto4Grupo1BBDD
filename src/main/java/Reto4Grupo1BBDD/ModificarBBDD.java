@@ -59,11 +59,12 @@ public class ModificarBBDD {
 	public ResultSet cargarListaAlojamientos(String busqueda) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE ?)";
+		String query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE ? OR UBICACIONES.COD_POSTAL LIKE ?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, "%" + busqueda + "%");
 			stmt.setString(2, "%" + busqueda + "%");
+			stmt.setString(3, "%" + busqueda + "%");
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
