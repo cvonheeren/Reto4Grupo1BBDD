@@ -151,7 +151,7 @@ public class ModificarBBDD {
 	public ResultSet comprobarCliente(String dniUsuario, String pass) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM CLIENTES WHERE DNI = ? AND CONTRA = ?";
+		String query = "SELECT * FROM CLIENTES WHERE DNI = ? AND CONTRASENA = MD5(?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, dniUsuario);
@@ -181,6 +181,55 @@ public class ModificarBBDD {
 			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
 			//Implementar logger?
+			e1.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * Inserta los datos del nuevo cliente en la tabla 'clientes'
+	 * @param dni
+	 * @param password
+	 * @param nombre
+	 * @param Apellidos
+	 * @param fechanac
+	 * @param mail
+	 * @return true si hace el insert y false si no
+	 */
+	public boolean insertarCliente(String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
+		PreparedStatement stmt = null;
+		String query = "INSERT INTO CLIENTES (DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL) VALUES (?, MD5(?), ?, ?, ?, ?)";
+		try {
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, dni);
+			stmt.setString(2, password);
+			stmt.setString(3, nombre);
+			stmt.setString(4, apellidos);
+			stmt.setDate(5, fechanac);
+			stmt.setString(6, mail);
+			stmt.executeUpdate();
+			return true;
+		} catch (SQLException e1) {
+			//Implementar logger?
+			e1.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
+	 * Comprueba que un dni esté o no en la BBDD
+	 * @param dniUsuario El dni que se va a comprobar
+	 * @return El dni si existe
+	 */
+	public ResultSet comprobarDni(String dniUsuario) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "SELECT * FROM CLIENTES WHERE DNI = ?";
+		try {
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, dniUsuario);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 		return result;
