@@ -150,7 +150,7 @@ public class ModificarBBDD {
 	public ResultSet comprobarCliente(String dniUsuario, String pass) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM CLIENTES WHERE DNI = ? AND CONTRA = ?";
+		String query = "SELECT * FROM CLIENTES WHERE DNI = ? AND CONTRASENA = MD5(?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, dniUsuario);
