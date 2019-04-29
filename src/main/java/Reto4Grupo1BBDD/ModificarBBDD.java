@@ -196,8 +196,9 @@ public class ModificarBBDD {
 	 * @param mail
 	 * @return true si hace el insert y false si no
 	 */
-	public boolean insertarCliente(String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
+	public ResultSet insertarCliente(String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
 		PreparedStatement stmt = null;
+		ResultSet result = null;
 		String query = "INSERT INTO CLIENTES (DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL) VALUES (?, MD5(?), ?, ?, ?, ?)";
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -208,12 +209,12 @@ public class ModificarBBDD {
 			stmt.setDate(5, fechanac);
 			stmt.setString(6, mail);
 			stmt.executeUpdate();
-			return true;
+			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
 			//Implementar logger?
 			e1.printStackTrace();
 		}
-		return false;
+		return result;
 	}
 	
 	/**
