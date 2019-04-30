@@ -47,6 +47,8 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -68,6 +70,8 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -85,6 +89,8 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -107,6 +113,8 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -138,6 +146,8 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -159,6 +169,8 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -167,9 +179,11 @@ public class ModificarBBDD {
 	 * Inserta los valores de una reserva en la tabla 'reservas'
 	 * @param codHotel Codigo del hotel en el que se efectua la reserva
 	 * @param precio Precio de la reserva
+	 * @param fecha2 
+	 * @param fecha1 
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet insertarReserva(int codHotel, float precio) {
+	public ResultSet insertarReserva(int codHotel, float precio, Date fecha1, Date fecha2) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_ALOJAMIENTO, PRECIO) VALUES (NULL, ?, ?)";
@@ -182,6 +196,8 @@ public class ModificarBBDD {
 		} catch (SQLException e1) {
 			//Implementar logger?
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -213,6 +229,8 @@ public class ModificarBBDD {
 		} catch (SQLException e1) {
 			//Implementar logger?
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
@@ -232,6 +250,8 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		return result;
 	}
