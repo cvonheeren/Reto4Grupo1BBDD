@@ -186,11 +186,15 @@ public class ModificarBBDD {
 	public ResultSet insertarReserva(int codHotel, float precio, Date fecha1, Date fecha2) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_ALOJAMIENTO, PRECIO) VALUES (NULL, ?, ?)";
+		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_ALOJAMIENTO, FECHACOMPRA, FECHAENTRADA, FECHASALIDA, PRECIOTOTAL) VALUES (NULL, ?, ?, ?, ?, ?)";
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, codHotel);
-			stmt.setFloat(2, precio);
+			stmt.setDate(2, fecha1);
+			stmt.setDate(3, fecha1);
+			
+			stmt.setDate(4, fecha2);
+			stmt.setFloat(5, precio);
 			stmt.executeUpdate();
 			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
