@@ -224,6 +224,34 @@ public class ModificarBBDD {
 	}
 	
 	/**
+	 * Inserta los valores de una reserva en la tabla 'reservas'
+	 * @param codHotel Codigo del hotel en el que se efectua la reserva
+	 * @param precio Precio de la reserva
+	 * @param fecha2 
+	 * @param fecha1 
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
+	public ResultSet insertarReservaHabitaciones(int codReserva, int codHabitacion, int cantidad) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "INSERT INTO RESERVA_HABITACION (COD_RESERVA, COD_HABITACION, CANTIDAD) VALUES (?, ?, ?)";
+		try {
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, codReserva);
+			stmt.setInt(2, codHabitacion);
+			stmt.setInt(3, cantidad);
+			stmt.executeUpdate();
+			result = stmt.getGeneratedKeys();
+		} catch (SQLException e1) {
+			//Implementar logger?
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		return result;
+	}
+	
+	/**
 	 * Inserta los datos del nuevo cliente en la tabla 'clientes'
 	 * @param dni
 	 * @param password
