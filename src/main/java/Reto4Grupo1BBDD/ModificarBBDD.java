@@ -200,14 +200,14 @@ public class ModificarBBDD {
 	 * @param fecha1 
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet insertarReserva(int codAlojamiento, float precio, Date fecha1, Date fecha2) {
+	public ResultSet insertarReserva(int codAlojamiento, float precio, Date fechaCompra, Date fecha1, Date fecha2) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_ALOJAMIENTO, FECHACOMPRA, FECHAENTRADA, FECHASALIDA, PRECIOTOTAL) VALUES (NULL, ?, ?, ?, ?, ?)";
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, codAlojamiento);
-			stmt.setDate(2, fecha1);
+			stmt.setDate(2, fechaCompra);
 			stmt.setDate(3, fecha1);
 			
 			stmt.setDate(4, fecha2);
