@@ -29,7 +29,7 @@ public class ModificarBBDD {
 		} catch (SQLException e) {
 			//Implementar logger?
 			System.out.println(e.getMessage());
-			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 	}
@@ -38,7 +38,7 @@ public class ModificarBBDD {
 	 * Obtiene una lista con los nombres de todas las ciudades
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarListaDestinos() {
+	public ResultSet cargarNombresDestinos() {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "SELECT DISTINCT UBICACIONES.NOMBRE FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION ORDER BY UBICACIONES.NOMBRE ASC";
@@ -47,7 +47,7 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
@@ -58,7 +58,7 @@ public class ModificarBBDD {
 	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarListaAlojamientos(String busqueda) {
+	public ResultSet cargarAlojamientos(String busqueda) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE ? OR UBICACIONES.COD_POSTAL LIKE ?)";
@@ -70,7 +70,7 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
@@ -80,7 +80,7 @@ public class ModificarBBDD {
 	 * Obtiene los nombres de todos los alojamientos
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarListaAlojamientos() {
+	public ResultSet cargarNombresAlojamientos() {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "SELECT NOMBRE FROM ALOJAMIENTOS";
@@ -89,7 +89,7 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
@@ -100,12 +100,12 @@ public class ModificarBBDD {
 	 * @param codAlojamiento codigo del alojamiento
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarListaHabitaciones(int codAlojamiento) {
+	public ResultSet cargarHabitaciones(int codAlojamiento) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		
 		// informacion de todos los dormitorios de un hotel
-		String query = "SELECT * FROM ALOJAMIENTO_DORMITORIO, DORMITORIOS WHERE ALOJAMIENTO_DORMITORIO.COD_DORMITORIO = DORMITORIOS.COD_DORMITORIO AND COD_ALOJAMIENTO = ?";		
+		String query = "SELECT * FROM ALOJAMIENTO_HABITACION, HABITACIONES WHERE ALOJAMIENTO_HABITACION.COD_HABITACION = HABITACIONES.COD_HABITACION AND COD_ALOJAMIENTO = ?";		
 
 		try {
 			stmt = conn.prepareStatement(query);
@@ -113,16 +113,9 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
-		return result;
-	}
-	
-	public ResultSet habDisponible(int codAlojamiento, int codHabitacion, Date fechaEntrada, Date fechaSalida) {
-		PreparedStatement stmt = null;
-		ResultSet result = null;
-		
 		return result;
 	}
 	
@@ -136,7 +129,7 @@ public class ModificarBBDD {
 		ResultSet result = null;
 		
 		// codigo y cantidad de los dormitorios reservados de un hotel
-		String query = "SELECT COD_DORMITORIO, CANTIDAD FROM RESERVA_DORMITORIO, RESERVAS WHERE RESERVA_DORMITORIO.COD_RESERVA = RESERVAS.COD_RESERVA AND COD_ALOJAMIENTO = ? AND FECHAENTRADA <= ? AND FECHASALIDA >= ?";
+		String query = "SELECT COD_HABITACION, CANTIDAD FROM RESERVA_HABITACION, RESERVAS WHERE RESERVA_HABITACION.COD_RESERVA = RESERVAS.COD_RESERVA AND COD_ALOJAMIENTO = ? AND FECHAENTRADA <= ? AND FECHASALIDA >= ?";
 		
 		try {
 			stmt = conn.prepareStatement(query);
@@ -146,7 +139,31 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		return result;
+	}
+	
+	/**
+	 * Obtiene las estancias del alojamiento indicado
+	 * @param codAlojamiento codigo del alojamiento
+	 * @return ResultSet Resultado devuelto por la consulta
+	 */
+	public ResultSet cargarEstancias(int codAlojamiento) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		
+		// informacion de todos los dormitorios de un hotel
+		String query = "SELECT * FROM ALOJAMIENTO_ESTANCIA, ESTANCIAS WHERE ALOJAMIENTO_ESTANCIA.COD_ESTANCIA = ESTANCIAS.COD_ESTANCIA AND COD_ALOJAMIENTO = ?";		
+
+		try {
+			stmt = conn.prepareStatement(query);
+			stmt.setInt(1, codAlojamiento);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
@@ -169,7 +186,7 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
@@ -200,7 +217,7 @@ public class ModificarBBDD {
 		} catch (SQLException e1) {
 			//Implementar logger?
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
@@ -233,7 +250,7 @@ public class ModificarBBDD {
 		} catch (SQLException e1) {
 			//Implementar logger?
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
@@ -254,7 +271,7 @@ public class ModificarBBDD {
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
