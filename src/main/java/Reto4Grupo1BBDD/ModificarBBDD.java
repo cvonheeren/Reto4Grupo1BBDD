@@ -303,5 +303,57 @@ public class ModificarBBDD {
 			System.exit(0);
 		}
 		return result;
+	
+	}
+	
+	public float ValidarCodPromo(int codPromo, String DNI) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		float descuento;
+		String query = "SELECT * FROM PROMOCIONES WHERE DNI = ?";
+		try {
+			stmt = conn.prepareStatement(query);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		try {
+			if(result.getInt("CODPROMO")==codPromo)
+			{
+				descuento=result.getFloat("DESCUENTO");
+				BorrarPromocion(codPromo);
+				return descuento;
+			}
+			else
+			{
+				return -1;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -2;
+	
+	}
+
+	private void BorrarPromocion(int codPromo) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		float descuento;
+		String query = "DELETE FROM PROMOCIONES WHERE CODPROMO = ?";
+		try {
+			stmt = conn.prepareStatement(query);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			result = stmt.executeQuery();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
