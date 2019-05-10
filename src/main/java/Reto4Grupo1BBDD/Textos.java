@@ -2,7 +2,17 @@ package Reto4Grupo1BBDD;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -52,4 +62,27 @@ public class Textos {
 		
 		return datos;
 	}
+	
+	/**
+	 * Encripta los datos con MD5
+	 * @param txt Lo que quieres encriptar
+	 * @return Una cadena en MD5
+	 */
+	public String encriptar(String txt) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest
+                    .getInstance("MD5");
+            byte[] array = md.digest(txt.getBytes());
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < array.length; ++i) {
+                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100)
+                        .substring(1, 3));
+            }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+	
 }
