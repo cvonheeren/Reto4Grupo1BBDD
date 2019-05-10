@@ -178,11 +178,12 @@ public class ModificarBBDD {
 	public ResultSet comprobarCliente(String dniUsuario, String pass) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM CLIENTES WHERE DNI = ? AND CONTRASENA = MD5(?)";
+		String query = "SELECT * FROM CLIENTES WHERE (DNI = ? OR EMAIL = ?) AND CONTRASENA = MD5(?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, dniUsuario);
-			stmt.setString(2, pass);
+			stmt.setString(2, dniUsuario);
+			stmt.setString(3, pass);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -264,7 +265,7 @@ public class ModificarBBDD {
 	public ResultSet insertarCliente(String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "INSERT INTO CLIENTES (DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL) VALUES (?, MD5(?), ?, ?, ?, ?)";
+		String query = "INSERT INTO CLIENTES (DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL, FECHABASES) VALUES (?, MD5(?), ?, ?, ?, ?, CURRENT_DATE)";
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, dni);
