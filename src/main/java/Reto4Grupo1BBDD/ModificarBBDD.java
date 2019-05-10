@@ -1,5 +1,8 @@
 package Reto4Grupo1BBDD;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -265,6 +268,15 @@ public class ModificarBBDD {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		String query = "INSERT INTO CLIENTES (DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL) VALUES (?, MD5(?), ?, ?, ?, ?)";
+		
+		// encripta los datos personales
+		Textos textos = new Textos();
+		dni = textos.encriptar(dni).toString();
+		password = textos.encriptar(password).toString();
+		nombre = textos.encriptar(nombre).toString();
+		apellidos = textos.encriptar(apellidos).toString();
+		mail = textos.encriptar(mail).toString();
+		
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, dni);
@@ -283,6 +295,9 @@ public class ModificarBBDD {
 		}
 		return result;
 	}
+	
+	
+	
 	
 	/**
 	 * Comprueba que un dni esté o no en la BBDD
