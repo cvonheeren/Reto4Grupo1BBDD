@@ -306,13 +306,14 @@ public class ModificarBBDD {
 	
 	}
 	
-	public float ValidarCodPromo(int codPromo, String DNI) {
+	public float ValidarCodPromo(String codPromo, String DNI) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		float descuento;
 		String query = "SELECT * FROM PROMOCIONES WHERE DNI = ?";
 		try {
 			stmt = conn.prepareStatement(query);
+			stmt.setString(1, DNI);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -320,7 +321,8 @@ public class ModificarBBDD {
 			System.exit(0);
 		}
 		try {
-			if(result.getInt("CODPROMO")==codPromo)
+			result.next();
+			if(result.getString("CODPROMO").equals(codPromo))
 			{
 				descuento=result.getFloat("DESCUENTO");
 				BorrarPromocion(codPromo);
@@ -330,7 +332,7 @@ public class ModificarBBDD {
 			{
 				return -1;
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -338,19 +340,20 @@ public class ModificarBBDD {
 	
 	}
 
-	private void BorrarPromocion(int codPromo) {
+	private void BorrarPromocion(String codPromo) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		float descuento;
 		String query = "DELETE FROM PROMOCIONES WHERE CODPROMO = ?";
+		
 		try {
 			stmt = conn.prepareStatement(query);
+			stmt.setString(1, codPromo);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		try {
-			result = stmt.executeQuery();
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
