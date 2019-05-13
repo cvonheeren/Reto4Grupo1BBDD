@@ -61,15 +61,20 @@ public class ModificarBBDD {
 	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarAlojamientos(String busqueda) {
+	public ResultSet cargarAlojamientos(String busqueda, int estrellasMin, int estrellasMax, String[] tipoAloj) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE ? OR UBICACIONES.COD_POSTAL LIKE ?)";
+		String query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, "%" + busqueda + "%");
 			stmt.setString(2, "%" + busqueda + "%");
 			stmt.setString(3, "%" + busqueda + "%");
+			stmt.setInt(4, estrellasMin);
+			stmt.setInt(5, estrellasMax);
+			stmt.setString(6, tipoAloj[0]);
+			stmt.setString(7, tipoAloj[1]);
+			stmt.setString(8, tipoAloj[2]);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
