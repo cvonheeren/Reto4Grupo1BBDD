@@ -178,15 +178,14 @@ public class ModificarBBDD {
 	 * @param pass Contrasena que se quiere buscar
 	 * @return ResultSet resultado devuelto por la consulta
 	 */
-	public ResultSet comprobarCliente(String dniUsuario, String pass) {
+	public ResultSet comprobarCliente(String user, String pass) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM CLIENTES WHERE (DNI = ? OR EMAIL = ?) AND CONTRASENA = MD5(?)";
+		String query = "SELECT * FROM CLIENTES WHERE USER_NAME = ?  AND CONTRASENA = MD5(?)";
 		try {
 			stmt = conn.prepareStatement(query);
-			stmt.setString(1, dniUsuario);
-			stmt.setString(2, dniUsuario);
-			stmt.setString(3, pass);
+			stmt.setString(1, user);
+			stmt.setString(2, pass);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -265,10 +264,10 @@ public class ModificarBBDD {
 	 * @param mail
 	 * @return true si hace el insert y false si no
 	 */
-	public ResultSet insertarCliente(String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
+	public ResultSet insertarCliente(String user, String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "INSERT INTO CLIENTES (DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL, FECHABASES) VALUES (?, MD5(?), ?, ?, ?, ?, CURRENT_DATE)";
+		String query = "INSERT INTO CLIENTES (USER_NAME, DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL, FECHABASES) VALUES (?, ?, MD5(?), ?, ?, ?, ?, CURRENT_DATE)";
 		
 		// encripta los datos personales
 		Textos textos = new Textos();
@@ -280,12 +279,13 @@ public class ModificarBBDD {
 		
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, dni);
-			stmt.setString(2, password);
-			stmt.setString(3, nombre);
-			stmt.setString(4, apellidos);
-			stmt.setDate(5, fechanac);
-			stmt.setString(6, mail);
+			stmt.setString(1, user);
+			stmt.setString(2, dni);
+			stmt.setString(3, password);
+			stmt.setString(4, nombre);
+			stmt.setString(5, apellidos);
+			stmt.setDate(6, fechanac);
+			stmt.setString(7, mail);
 			stmt.executeUpdate();
 			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
