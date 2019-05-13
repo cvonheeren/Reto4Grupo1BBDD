@@ -1,8 +1,5 @@
 package Reto4Grupo1BBDD;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -313,7 +310,7 @@ public class ModificarBBDD {
 	public ResultSet comprobarDni(String dniUsuario) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM CLIENTES WHERE DNI = ?";
+		String query = "SELECT * FROM CLIENTES WHERE DNI = MD5(?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, dniUsuario);
@@ -331,7 +328,7 @@ public class ModificarBBDD {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		float descuento;
-		String query = "SELECT * FROM PROMOCIONES WHERE DNI = ?";
+		String query = "SELECT * FROM PROMOCIONES WHERE DNI = MD5(?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, DNI);
@@ -363,7 +360,6 @@ public class ModificarBBDD {
 
 	private void BorrarPromocion(String codPromo) {
 		PreparedStatement stmt = null;
-		ResultSet result = null;
 		String query = "DELETE FROM PROMOCIONES WHERE CODPROMO = ?";
 		
 		try {
