@@ -1,8 +1,5 @@
 package Reto4Grupo1BBDD;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -358,7 +355,6 @@ public class ModificarBBDD {
 
 	private void BorrarPromocion(String codPromo) {
 		PreparedStatement stmt = null;
-		ResultSet result = null;
 		String query = "DELETE FROM PROMOCIONES WHERE CODPROMO = ?";
 		
 		try {
