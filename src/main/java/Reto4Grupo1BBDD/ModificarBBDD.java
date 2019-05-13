@@ -183,7 +183,9 @@ public class ModificarBBDD {
 	public ResultSet comprobarCliente(String user, String pass) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM CLIENTES WHERE USER_NAME = ?  AND CONTRASENA = MD5(?)";
+		String query = "SELECT * FROM CLIENTES WHERE USER_NAME = ?  AND CONTRASENA = ?";
+		Textos textos = new Textos();
+		pass = textos.encriptar(pass);
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, user);
@@ -269,7 +271,7 @@ public class ModificarBBDD {
 	public ResultSet insertarCliente(String user, String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "INSERT INTO CLIENTES (USER_NAME, DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL, FECHABASES) VALUES (?, ?, MD5(?), ?, ?, ?, ?, CURRENT_DATE)";
+		String query = "INSERT INTO CLIENTES (USER_NAME, DNI, CONTRASENA, NOMBRE, APELLIDOS, FECHANAC, EMAIL, FECHABASES) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_DATE)";
 		
 		// encripta los datos personales
 		Textos textos = new Textos();
@@ -310,7 +312,9 @@ public class ModificarBBDD {
 	public ResultSet comprobarDni(String dniUsuario) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM CLIENTES WHERE DNI = MD5(?)";
+		String query = "SELECT * FROM CLIENTES WHERE DNI = ?";
+		Textos textos = new Textos();
+		dniUsuario = textos.encriptar(dniUsuario);
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, dniUsuario);
@@ -328,7 +332,9 @@ public class ModificarBBDD {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		float descuento;
-		String query = "SELECT * FROM PROMOCIONES WHERE DNI = MD5(?)";
+		Textos textos = new Textos();
+		DNI = textos.encriptar(DNI);
+		String query = "SELECT * FROM PROMOCIONES WHERE DNI = ?";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, DNI);
