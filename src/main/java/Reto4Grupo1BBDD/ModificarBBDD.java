@@ -328,16 +328,16 @@ public class ModificarBBDD {
 	
 	}
 	
-	public float ValidarCodPromo(String codPromo, String DNI) {
+	public float ValidarCodPromo(String codPromo, String user) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		float descuento;
 		Textos textos = new Textos();
-		DNI = textos.encriptar(DNI);
-		String query = "SELECT * FROM PROMOCIONES WHERE DNI = ?";
+		user = textos.encriptar(user);
+		String query = "SELECT * FROM PROMOCIONES WHERE USER_NAME = ?";
 		try {
 			stmt = conn.prepareStatement(query);
-			stmt.setString(1, DNI);
+			stmt.setString(1, user);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
