@@ -205,20 +205,21 @@ public class ModificarBBDD {
 	 * @param precio Precio de la reserva
 	 * @param fecha2 
 	 * @param fecha1 
+	 * @param string 
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet insertarReserva(int codAlojamiento, float precio, Date fechaCompra, Date fecha1, Date fecha2) {
+	public ResultSet insertarReserva(int codAlojamiento, float precio, Date fechaCompra, Date fecha1, Date fecha2, int codCliente) {
 		PreparedStatement stmt = null;
-		ResultSet result = null;
-		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_ALOJAMIENTO, FECHACOMPRA, FECHAENTRADA, FECHASALIDA, PRECIOTOTAL) VALUES (NULL, ?, ?, ?, ?, ?)";
+		ResultSet result = null;//			(Dejar NULL)		1			2				3				4			5			6						1  2  3  4  5  6
+		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_CLIENTE, COD_ALOJAMIENTO, FECHACOMPRA, FECHAENTRADA, FECHASALIDA, PRECIOTOTAL) VALUES (NULL, ?, ?, ?, ?, ?, ?)";
 		try {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, codAlojamiento);
-			stmt.setDate(2, fechaCompra);
-			stmt.setDate(3, fecha1);
-			
-			stmt.setDate(4, fecha2);
-			stmt.setFloat(5, precio);
+			stmt.setInt(1, codCliente);
+			stmt.setInt(2, codAlojamiento);
+			stmt.setDate(3, fechaCompra);
+			stmt.setDate(4, fecha1);
+			stmt.setDate(5, fecha2);
+			stmt.setFloat(6, precio);
 			stmt.executeUpdate();
 			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
@@ -376,5 +377,22 @@ public class ModificarBBDD {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public ResultSet obtenerCodCliente(String username) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "SELECT COD_CLIENTE FROM CLIENTES WHERE USER_NAME = ?";		
+		try {
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, username);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			//Implementar logger?
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		return result;
 	}
 }
