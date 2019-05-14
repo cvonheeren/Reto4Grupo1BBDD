@@ -354,10 +354,7 @@ public class ModificarBBDD {
 			{
 				return -1;
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (SQLException e) {}
 		return -2;
 	
 	}
