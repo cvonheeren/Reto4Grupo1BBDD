@@ -332,8 +332,6 @@ public class ModificarBBDD {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
 		float descuento;
-		Textos textos = new Textos();
-		user = textos.encriptar(user);
 		String query = "SELECT * FROM PROMOCIONES WHERE USER_NAME = ?";
 		try {
 			stmt = conn.prepareStatement(query);
