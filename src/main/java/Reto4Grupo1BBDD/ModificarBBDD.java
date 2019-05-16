@@ -58,10 +58,30 @@ public class ModificarBBDD {
 	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarAlojamientos(String busqueda, int estrellasMin, int estrellasMax, String[] tipoAloj) {
+	public ResultSet cargarAlojamientos(String busqueda, int estrellasMin, int estrellasMax, String[] tipoAloj, char tipoOrden, boolean ordenAscendente) {
+		/* 'P' Popularidad
+		 * 'D' Dinero
+		 */
+		String orden;
+		String query = null;
+		if(ordenAscendente)
+			orden="ASC";
+		else
+			orden="DESC";
+		
+		if(tipoOrden == 'P')
+		{
+			query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) ORDER BY N_RESERVAS " + orden + ";";
+		}
+		else if(tipoOrden == 'D')
+		{
+			query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) ORDER BY TARIFA_NORMAL " + orden + ";";
+		}
+			
+		
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?)";
+		//query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?)";
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, "%" + busqueda + "%");
@@ -395,4 +415,6 @@ public class ModificarBBDD {
 		}
 		return result;
 	}
+	
+	
 }
