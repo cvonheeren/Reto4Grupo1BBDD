@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -228,7 +229,7 @@ public class ModificarBBDD {
 	 * @param string 
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet insertarReserva(int codAlojamiento, float precio, Date fechaCompra, Date fecha1, Date fecha2, int codCliente) {
+	public ResultSet insertarReserva(int codAlojamiento, float precio, Timestamp fechaCompra, Date fecha1, Date fecha2, int codCliente) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;//			(Dejar NULL)		1			2				3				4			5			6						1  2  3  4  5  6
 		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_CLIENTE, COD_ALOJAMIENTO, FECHACOMPRA, FECHAENTRADA, FECHASALIDA, PRECIOTOTAL) VALUES (NULL, ?, ?, ?, ?, ?, ?)";
@@ -236,7 +237,7 @@ public class ModificarBBDD {
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, codCliente);
 			stmt.setInt(2, codAlojamiento);
-			stmt.setDate(3, fechaCompra, java.util.Calendar.getInstance());
+			stmt.setTimestamp(3, fechaCompra, java.util.Calendar.getInstance());
 			stmt.setDate(4, fecha1, java.util.Calendar.getInstance());
 			stmt.setDate(5, fecha2, java.util.Calendar.getInstance());
 			stmt.setFloat(6, precio);
@@ -349,38 +350,25 @@ public class ModificarBBDD {
 	
 	}
 	
-	public float ValidarCodPromo(String codPromo, String user) {
+	public ResultSet validarCodPromo(String codPromo, String user, int codAlojamiento) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		float descuento;
-		String query = "SELECT * FROM PROMOCIONES WHERE USER_NAME = ?";
+		String query = "SELECT * FROM PROMOCIONES WHERE CODPROMO = ? AND USER_NAME = ? AND COD_ALOJAMIENTO = ?";
 		try {
 			stmt = conn.prepareStatement(query);
-			stmt.setString(1, user);
+			stmt.setString(1, codPromo);
+			stmt.setString(2, user);
+			stmt.setInt(3, codAlojamiento);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
-		try {
-			result.next();
-			if(result.getString("CODPROMO").equals(codPromo))
-			{
-				descuento=result.getFloat("DESCUENTO");
-				BorrarPromocion(codPromo);
-				return descuento;
-			}
-			else
-			{
-				return -1;
-			}
-		} catch (SQLException e) {}
-		return -2;
-	
+		return result;
 	}
 
-	private void BorrarPromocion(String codPromo) {
+	public void BorrarPromocion(String codPromo) {
 		PreparedStatement stmt = null;
 		String query = "DELETE FROM PROMOCIONES WHERE CODPROMO = ?";
 		
