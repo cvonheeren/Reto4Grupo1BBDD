@@ -433,4 +433,24 @@ public class ModificarBBDD {
 		return result;
 	}
 	
+	/**
+	 * Obtiene los alojamientos que disponen de un servicio
+	 * @param codServicio
+	 * @return
+	 */
+	public ResultSet obtenerAlojporServicio(int codServicio) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "select cod_alojamiento from servicios_alojamientos where cod_servicio = ?";
+		try {
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, codServicio);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		return result;
+	}
 }
