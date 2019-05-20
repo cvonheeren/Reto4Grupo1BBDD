@@ -433,6 +433,21 @@ public class ModificarBBDD {
 		return result;
 	}
 	
+	public ResultSet obtenerTodosServicios() {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "SELECT * FROM SERVICIOS A;";
+		try {
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		return result;
+	}
+	
 	/**
 	 * Obtiene los alojamientos que disponen de un servicio
 	 * @param codServicio
