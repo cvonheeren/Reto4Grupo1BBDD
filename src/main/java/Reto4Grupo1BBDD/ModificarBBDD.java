@@ -349,6 +349,12 @@ public class ModificarBBDD {
 	
 	}
 	
+	/**
+	 * saca las promociones de un cliente
+	 * @param codPromo
+	 * @param user
+	 * @return
+	 */
 	public float ValidarCodPromo(String codPromo, String user) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
@@ -380,6 +386,10 @@ public class ModificarBBDD {
 	
 	}
 
+	/**
+	 * Borra la promicion cuando se ha usado
+	 * @param codPromo
+	 */
 	private void BorrarPromocion(String codPromo) {
 		PreparedStatement stmt = null;
 		String query = "DELETE FROM PROMOCIONES WHERE CODPROMO = ?";
@@ -399,6 +409,11 @@ public class ModificarBBDD {
 		}
 	}
 
+	/**
+	 * obtiene el codigo de un cliente segun su user
+	 * @param username
+	 * @return
+	 */
 	public ResultSet obtenerCodCliente(String username) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
@@ -416,5 +431,26 @@ public class ModificarBBDD {
 		return result;
 	}
 	
+	/**
+	 * Obtiene los servicios de un alojamiento por su codigo de alojamiento
+	 * @param codAlojamiento
+	 * @return
+	 */
+	public ResultSet obtenerServicios(int codAlojamiento) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "SELECT A.COD_SERVICIO, A.NOMBRE, B.PRECIO, FONTAWESOMEICON FROM SERVICIOS A, SERVICIOS_ALOJAMIENTOS B, ALOJAMIENTOS C WHERE B.COD_ALOJAMIENTO=C.COD_ALOJAMIENTO AND A.COD_SERVICIO=B.COD_SERVICIO AND B.COD_ALOJAMIENTO=?";
+		try {
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, codAlojamiento);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			//Implementar logger?
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		return result;
+	}
 	
 }
