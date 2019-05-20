@@ -28,7 +28,6 @@ public class ModificarBBDD {
 		try {
 			conn = pool.getConnection();
 		} catch (SQLException e) {
-			//Implementar logger?
 			System.out.println(e.getMessage());
 			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
@@ -78,7 +77,6 @@ public class ModificarBBDD {
 		{
 			query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) ORDER BY TARIFA_NORMAL " + orden + ";";
 		}
-			
 		
 		PreparedStatement stmt = null;
 		ResultSet result = null;
@@ -244,7 +242,6 @@ public class ModificarBBDD {
 			stmt.executeUpdate();
 			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
-			//Implementar logger?
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
@@ -272,7 +269,6 @@ public class ModificarBBDD {
 			stmt.executeUpdate();
 			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
-			//Implementar logger?
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
@@ -315,16 +311,12 @@ public class ModificarBBDD {
 			stmt.executeUpdate();
 			result = stmt.getGeneratedKeys();
 		} catch (SQLException e1) {
-			//Implementar logger?
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		return result;
 	}
-	
-	
-	
 	
 	/**
 	 * Comprueba que un dni esté o no en la BBDD
@@ -413,7 +405,6 @@ public class ModificarBBDD {
 			stmt.setString(1, username);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
-			//Implementar logger?
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
@@ -435,7 +426,6 @@ public class ModificarBBDD {
 			stmt.setInt(1, codAlojamiento);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
-			//Implementar logger?
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
