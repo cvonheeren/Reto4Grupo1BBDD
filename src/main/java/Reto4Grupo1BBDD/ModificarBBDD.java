@@ -66,17 +66,19 @@ public class ModificarBBDD {
 		String query = null;
 		
 		String filtroServicios = "";
-		double sumadorFiltroServ=0;
 		if(!(servSeleccionados.length==0))
 		{
-			filtroServicios = "AND POW(servicios_alojamientos.COD_SERVICIO,4) =";
-				for(int i=0;i<servSeleccionados.length;i++)
-				
+			filtroServicios = "AND ALOJAMIENTOS.COD_ALOJAMIENTO in(SELECT COD_ALOJAMIENTO FROM SERVICIOS_ALOJAMIENTOS WHERE COD_SERVICIO NOT IN(";
+			
+			filtroServicios=filtroServicios + servSeleccionados[0];
+			if(servSeleccionados.length>=1)
+			{
+				for(int i=1;i<servSeleccionados.length;i++)
 				{
-					System.out.println("COD_SERVICIO: " + servSeleccionados[i] + "Calculo: " + Math.pow(servSeleccionados[i],4));
-					sumadorFiltroServ=sumadorFiltroServ+servSeleccionados[i];
+					filtroServicios=filtroServicios + ", " + servSeleccionados[i];
 				}
-				filtroServicios=filtroServicios+Math.pow(sumadorFiltroServ,4);
+			}	
+			filtroServicios=filtroServicios+")) ";
 		}
 		
 		
@@ -88,11 +90,11 @@ public class ModificarBBDD {
 		
 		if(tipoOrden == 'P')
 		{
-			query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY N_RESERVAS " + orden +";";
+			query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY N_RESERVAS " + orden +";";
 		}
 		else if(tipoOrden == 'D')
 		{
-			query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY TARIFA_NORMAL " + orden +";";
+			query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY TARIFA_NORMAL " + orden +";";
 		}
 		PreparedStatement stmt = null;
 		ResultSet result = null;
