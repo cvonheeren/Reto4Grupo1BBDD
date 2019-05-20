@@ -58,29 +58,41 @@ public class ModificarBBDD {
 	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet cargarAlojamientos(String busqueda, int estrellasMin, int estrellasMax, String[] tipoAloj, char tipoOrden, boolean ordenAscendente) {
+	public ResultSet cargarAlojamientos(String busqueda, int estrellasMin, int estrellasMax, String[] tipoAloj, char tipoOrden, boolean ordenAscendente, String[] servSeleccionados) {
 		/* 'P' Popularidad
 		 * 'D' Dinero
 		 */
 		String orden;
 		String query = null;
+		
+		String filtroServicios = null;
+		if(servSeleccionados.length!=0)
+		{
+			filtroServicios = " cod_servicio=" + servSeleccionados[0] + " ";
+			for(int i=1;i<servSeleccionados.length;i++)
+			{
+				filtroServicios=filtroServicios + "and cod_servicio=" + servSeleccionados[i] + " ";
+			}
+		}
+		
+		
 		if(ordenAscendente)
 			orden="ASC";
 		else
 			orden="DESC";
 		
+		
 		if(tipoOrden == 'P')
 		{
-			query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) ORDER BY N_RESERVAS " + orden + ";";
+			query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) AND servicios_alojamientos.COD_ALOJAMIENTO in(SELECT COD_ALOJAMIENTO FROM servicios_alojamientos WHERE " + filtroServicios + ") ORDER BY N_RESERVAS " + orden +";";
 		}
 		else if(tipoOrden == 'D')
 		{
-			query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) ORDER BY TARIFA_NORMAL " + orden + ";";
+			query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) AND servicios_alojamientos.COD_ALOJAMIENTO in(SELECT COD_ALOJAMIENTO FROM servicios_alojamientos WHERE " + filtroServicios + ") ORDER BY TARIFA_NORMAL " + orden +";";
 		}
-		
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		//query = "SELECT * FROM ALOJAMIENTOS, UBICACIONES WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?)";
+		System.out.println(query);
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, "%" + busqueda + "%");
