@@ -445,6 +445,10 @@ public class ModificarBBDD {
 		return result;
 	}
 	
+	/**
+	 * Obtiene una lista de todos los servicios disponibles
+	 * @return
+	 */
 	public ResultSet obtenerTodosServicios() {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
