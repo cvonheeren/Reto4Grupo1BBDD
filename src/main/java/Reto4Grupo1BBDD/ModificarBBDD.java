@@ -420,9 +420,9 @@ public class ModificarBBDD {
 	public ResultSet obtenerServicios(int codAlojamiento) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		String query = "SELECT A.COD_SERVICIO, A.NOMBRE, B.PRECIO, FONTAWESOMEICON FROM SERVICIOS A, SERVICIOS_ALOJAMIENTOS B, ALOJAMIENTOS C WHERE B.COD_ALOJAMIENTO=C.COD_ALOJAMIENTO AND A.COD_SERVICIO=B.COD_SERVICIO AND B.COD_ALOJAMIENTO=?";
+		String query = "SELECT S.COD_SERVICIO, S.NOMBRE, SA.PRECIO, FONTAWESOMEICON FROM SERVICIOS S, SERVICIOS_ALOJAMIENTOS SA WHERE S.COD_SERVICIO=SA.COD_SERVICIO AND SA.COD_ALOJAMIENTO=?";
 		try {
-			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmt = conn.prepareStatement(query);
 			stmt.setInt(1, codAlojamiento);
 			result = stmt.executeQuery();
 		} catch (SQLException e1) {
