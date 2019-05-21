@@ -81,23 +81,34 @@ public class ModificarBBDD {
 			} else if (tipoOrden == 'D') {
 				filtroServicios += ") GROUP BY vistapreciohab.COD_ALOJAMIENTO HAVING COUNT(vistapreciohab.COD_ALOJAMIENTO) = ?";
 			}
+			// orden
+			if(ordenAscendente)
+				orden="ASC";
+			else
+				orden="DESC";
 			
+			if(tipoOrden == 'P') {
+				query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY N_RESERVAS " + orden +";";
+			} else if(tipoOrden == 'D') {
+				query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY TARIFA_NORMAL " + orden +";";
+			}
+			
+		} else {
+			// orden
+			if(ordenAscendente)
+				orden="ASC";
+			else
+				orden="DESC";
+			
+			if(tipoOrden == 'P') {
+				query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) ORDER BY N_RESERVAS " + orden +";";
+			} else if(tipoOrden == 'D') {
+				query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) ORDER BY TARIFA_NORMAL " + orden +";";
+			}
 		}
 		
-		// orden
-		if(ordenAscendente)
-			orden="ASC";
-		else
-			orden="DESC";
-		
-		if(tipoOrden == 'P') {
-			query = "SELECT * FROM vistapopularidad left join alojamientos on (vistapopularidad.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY N_RESERVAS " + orden +";";
-		} else if(tipoOrden == 'D') {
-			query = "SELECT * FROM vistapreciohab left join alojamientos on (vistapreciohab.COD_ALOJAMIENTO = alojamientos.COD_ALOJAMIENTO), ubicaciones, servicios_alojamientos WHERE ALOJAMIENTOS.COD_UBICACION = UBICACIONES.COD_UBICACION AND servicios_alojamientos.COD_ALOJAMIENTO=alojamientos.COD_ALOJAMIENTO AND (ALOJAMIENTOS.NOMBRE LIKE UPPER(?) OR UBICACIONES.NOMBRE LIKE UPPER(?) OR UBICACIONES.COD_POSTAL LIKE ?) AND ((ESTRELLAS BETWEEN ? AND ?) OR ESTRELLAS IS NULL) AND TIPO IN (?,?,?) " + filtroServicios + " ORDER BY TARIFA_NORMAL " + orden +";";
-		}
 		PreparedStatement stmt = null;
 		ResultSet result = null;
-		System.out.println(query);
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, "%" + busqueda + "%");
