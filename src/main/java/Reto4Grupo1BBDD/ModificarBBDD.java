@@ -250,6 +250,27 @@ public class ModificarBBDD {
 	}
 	
 	/**
+	 * Obtiene los servicios de un alojamiento por su codigo de alojamiento
+	 * @param codAlojamiento
+	 * @return
+	 */
+	public ResultSet obtenerServiciosPago(int codAlojamiento) {
+		PreparedStatement stmt = null;
+		ResultSet result = null;
+		String query = "SELECT S.COD_SERVICIO, S.NOMBRE, SA.PRECIO, FONTAWESOMEICON FROM SERVICIOS S, SERVICIOS_ALOJAMIENTOS SA WHERE S.COD_SERVICIO=SA.COD_SERVICIO AND SA.COD_ALOJAMIENTO=? AND PRECIO > 0";
+		try {
+			stmt = conn.prepareStatement(query);
+			stmt.setInt(1, codAlojamiento);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		return result;
+	}
+	
+	/**
 	 * Obtiene una lista de todos los servicios disponibles
 	 * @return
 	 */
@@ -413,7 +434,7 @@ public class ModificarBBDD {
 	 * @param codHotel Codigo del hotel en el que se efectua la reserva
 	 * @param precio Precio de la reserva
 	 * @param fecha2 
-	 * @param fecha1 
+	 * @param fecha1
 	 * @param string 
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
