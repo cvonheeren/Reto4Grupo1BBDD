@@ -1,5 +1,6 @@
 package Reto4Grupo1BBDD;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -7,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.LocalDate;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -527,5 +530,22 @@ public class ModificarBBDD {
 			System.exit(0);
 		}
 		return result;
+	}
+	
+	public void borrarReservas(Date fecha) {
+		CallableStatement stmt = null;
+		ResultSet result = null;
+		String query = "{?= call borrar_reserva(?)}";
+		try {
+			stmt = conn.prepareCall(query);
+			stmt.registerOutParameter(1,Types.DATE);
+			stmt.setDate(2, fecha);
+			result = stmt.executeQuery();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+//		return result;
 	}
 }
