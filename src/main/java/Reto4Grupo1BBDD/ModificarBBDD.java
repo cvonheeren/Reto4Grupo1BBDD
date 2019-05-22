@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.time.LocalDate;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -79,11 +78,13 @@ public class ModificarBBDD {
 					filtroServicios += ",";
 				}
 			}
+			// orden
 			if(tipoOrden == 'P') {
 				filtroServicios += ") GROUP BY vistapopularidad.COD_ALOJAMIENTO HAVING COUNT(vistapopularidad.COD_ALOJAMIENTO) = ?";
 			} else if (tipoOrden == 'D') {
 				filtroServicios += ") GROUP BY vistapreciohab.COD_ALOJAMIENTO HAVING COUNT(vistapreciohab.COD_ALOJAMIENTO) = ?";
 			}
+			
 			// orden
 			if(ordenAscendente)
 				orden="ASC";
@@ -293,27 +294,6 @@ public class ModificarBBDD {
 	}
 	
 	/**
-	 * Obtiene los alojamientos que disponen de un servicio
-	 * @param codServicio
-	 * @return
-	 */
-	public ResultSet obtenerAlojporServicio(int codServicio) {
-		PreparedStatement stmt = null;
-		ResultSet result = null;
-		String query = "select cod_alojamiento from servicios_alojamientos where cod_servicio = ?";
-		try {
-			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, codServicio);
-			result = stmt.executeQuery();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
-		}
-		return result;
-	}
-	
-	/**
 	 * 
 	 * @param codPromo
 	 * @param user
@@ -351,13 +331,11 @@ public class ModificarBBDD {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, codPromo);
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		try {
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -441,26 +419,29 @@ public class ModificarBBDD {
 	 * @param string 
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
-	public ResultSet insertarReserva(int codAlojamiento, float precio, Timestamp fechaCompra, Date fecha1, Date fecha2, int codCliente) {
-		PreparedStatement stmt = null;
-		ResultSet result = null;//			(Dejar NULL)		1			2				3				4			5			6						1  2  3  4  5  6
-		String query = "INSERT INTO RESERVAS (COD_RESERVA, COD_CLIENTE, COD_ALOJAMIENTO, FECHACOMPRA, FECHAENTRADA, FECHASALIDA, PRECIOTOTAL) VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+	public int insertarReserva(int codAlojamiento, float precio, Timestamp fechaCompra, Date fecha1, Date fecha2, int codCliente) {
+		CallableStatement stmt = null;
+		String query = "{call insertarReserva(?, ?, ?, ?, ?, ?, ?)}";
+		int codReserva = -1;
+		
 		try {
-			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, codCliente);
-			stmt.setInt(2, codAlojamiento);
-			stmt.setTimestamp(3, fechaCompra, java.util.Calendar.getInstance());
-			stmt.setDate(4, fecha1, java.util.Calendar.getInstance());
-			stmt.setDate(5, fecha2, java.util.Calendar.getInstance());
-			stmt.setFloat(6, precio);
-			stmt.executeUpdate();
-			result = stmt.getGeneratedKeys();
+			stmt = conn.prepareCall(query);
+			stmt.setInt(1, codAlojamiento);
+			stmt.setFloat(2, precio);
+			stmt.setTimestamp(3, fechaCompra);
+			stmt.setDate(4, fecha1);
+			stmt.setDate(5, fecha2);
+			stmt.setInt(6, codCliente);
+			stmt.registerOutParameter(7, Types.INTEGER);
+			stmt.executeQuery();
+			codReserva = stmt.getInt(7);
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
-		return result;
+		
+		return codReserva;
 	}
 	
 	/**
@@ -534,18 +515,16 @@ public class ModificarBBDD {
 	
 	public void borrarReservas(Date fecha) {
 		CallableStatement stmt = null;
-		ResultSet result = null;
 		String query = "{?= call borrar_reserva(?)}";
 		try {
 			stmt = conn.prepareCall(query);
 			stmt.registerOutParameter(1,Types.DATE);
 			stmt.setDate(2, fecha);
-			result = stmt.executeQuery();
+			stmt.executeQuery();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(new JFrame(), e1.getMessage(), "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
-//		return result;
 	}
 }
