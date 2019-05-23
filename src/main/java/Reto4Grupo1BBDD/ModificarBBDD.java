@@ -329,7 +329,7 @@ public class ModificarBBDD {
 
 	/**
 	 * Borra la promicion cuando se ha usado
-	 * @param codPromo
+	 * @param codPromo codigo promocional introducido por el cliente
 	 */
 	public void BorrarPromocion(String codPromo) {
 		PreparedStatement stmt = null;
@@ -421,7 +421,7 @@ public class ModificarBBDD {
 	/**
 	 * Inserta los valores de una reserva en la tabla 'reservas'
 	 * @param codAlojamiento Codigo del alojamiento en el que se efectua la reserva
-	 * @param precio
+	 * @param precio precio de la reserva
 	 * @param fechaCompra fecha en la que se ha realizado la reserva
 	 * @param fecha1 fecha de entrada de la reserva
 	 * @param fecha2 fecha de salida de la reserva
@@ -488,6 +488,17 @@ public class ModificarBBDD {
 	 * @param fechanac fecha de nacimiento del usuario
 	 * @param mail email del usuario
 	 * @return true si hace el insert y false si no
+	 */
+	/**
+	 * Inserta un cliente en la tabla 'clientes'
+	 * @param user nombre de usuario del cliente
+	 * @param dni dni del cliente
+	 * @param password contraseña del usuario
+	 * @param nombre nombre del usuario
+	 * @param apellidos apellidos del usuario
+	 * @param fechanac fecha de nacimiento del usuario
+	 * @param mail email del usuario
+	 * @return ResultSet Resultado devuelto por la consulta
 	 */
 	public ResultSet insertarCliente(String user, String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
 		PreparedStatement stmt = null;
