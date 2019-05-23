@@ -57,7 +57,13 @@ public class ModificarBBDD {
 	
 	/**
 	 * Obtiene los alojamientos ubicados en la ciudad especificada
-	 * @param ciudad Nombre de la ciudad por la que se quiere restringir la busqueda
+	 * @param busqueda texto a buscar
+	 * @param estrellasMin estrellas minimas del hotel
+	 * @param estrellasMax estrellas maximas del hotel
+	 * @param tipoAloj tipo de alojameinto a buscar
+	 * @param tipoOrden tipo de orden de la busqueda
+	 * @param ordenAscendente si la busqueda es en orden ascendente o descendente
+	 * @param servSeleccionados los servicios que se han seleccionado
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
 	public ResultSet cargarAlojamientos(String busqueda, int estrellasMin, int estrellasMax, String[] tipoAloj, char tipoOrden, boolean ordenAscendente, int[] servSeleccionados) {
@@ -183,10 +189,12 @@ public class ModificarBBDD {
 	}
 	
 	/**
-	 * Obtiene las habitaciones reservadas del alojamiento indicado
+	 *  Obtiene las habitaciones reservadas del alojamiento indicado
 	 * @param codAlojamiento codigo del alojamiento
+	 * @param fechaEntrada fecha de entrada de la reserva
+	 * @param fechaSalida fecha de salida de la reserva
 	 * @return ResultSet Resultado devuelto por la consulta
-	 */	
+	 */
 	public ResultSet cargarHabitacionesReservadas(int codAlojamiento, Date fechaEntrada, Date fechaSalida) {
 		PreparedStatement stmt = null;
 		ResultSet result = null;
@@ -234,8 +242,8 @@ public class ModificarBBDD {
 	
 	/**
 	 * Obtiene los servicios de un alojamiento por su codigo de alojamiento
-	 * @param codAlojamiento
-	 * @return
+	 * @param codAlojamiento codigo del alojamiento
+	 * @return ResultSet resultado de la consulta
 	 */
 	public ResultSet obtenerServicios(int codAlojamiento) {
 		PreparedStatement stmt = null;
@@ -255,8 +263,8 @@ public class ModificarBBDD {
 	
 	/**
 	 * Obtiene los servicios de un alojamiento por su codigo de alojamiento
-	 * @param codAlojamiento
-	 * @return
+	 * @param codAlojamiento codigo del alojamiento
+	 * @return ResultSet resultado de la consulta
 	 */
 	public ResultSet obtenerServiciosPago(int codAlojamiento) {
 		PreparedStatement stmt = null;
@@ -276,7 +284,7 @@ public class ModificarBBDD {
 	
 	/**
 	 * Obtiene una lista de todos los servicios disponibles
-	 * @return
+	 * @return ResultSet resultado de la consulta
 	 */
 	public ResultSet obtenerTodosServicios() {
 		PreparedStatement stmt = null;
@@ -294,11 +302,11 @@ public class ModificarBBDD {
 	}
 	
 	/**
-	 * 
-	 * @param codPromo
-	 * @param user
-	 * @param codAlojamiento
-	 * @return
+	 * Comprueba si el codigo promocional es valido
+	 * @param codPromo codigo promocional introducido por el usuario
+	 * @param user nombre de usuario
+	 * @param codAlojamiento codigo del alojamiento
+	 * @return ResultSet resultado de la consulta
 	 */
 	public ResultSet validarCodPromo(String codPromo, String user, int codAlojamiento) {
 
@@ -342,8 +350,8 @@ public class ModificarBBDD {
 
 	/**
 	 * obtiene el codigo de un cliente segun su user
-	 * @param username
-	 * @return
+	 * @param username nombre de usuario del cliente
+	 * @return ResultSet resultado de la consulta
 	 */
 	public ResultSet obtenerCodCliente(String username) {
 		PreparedStatement stmt = null;
@@ -363,7 +371,7 @@ public class ModificarBBDD {
 	
 	/**
 	 * Obtiene el cliente correspondiente al dni y contrasena indicados
-	 * @param dniUsuario DNI que se quiere buscar
+	 * @param user DNI que se quiere buscar
 	 * @param pass Contrasena que se quiere buscar
 	 * @return ResultSet resultado devuelto por la consulta
 	 */
@@ -412,11 +420,12 @@ public class ModificarBBDD {
 	
 	/**
 	 * Inserta los valores de una reserva en la tabla 'reservas'
-	 * @param codHotel Codigo del hotel en el que se efectua la reserva
-	 * @param precio Precio de la reserva
-	 * @param fecha2 
-	 * @param fecha1
-	 * @param string 
+	 * @param codAlojamiento Codigo del alojamiento en el que se efectua la reserva
+	 * @param precio
+	 * @param fechaCompra fecha en la que se ha realizado la reserva
+	 * @param fecha1 fecha de entrada de la reserva
+	 * @param fecha2 fecha de salida de la reserva
+	 * @param codCliente codigo de identificacion del cliente que realiza la reserva
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
 	public int insertarReserva(int codAlojamiento, float precio, Timestamp fechaCompra, Date fecha1, Date fecha2, int codCliente) {
@@ -445,11 +454,10 @@ public class ModificarBBDD {
 	}
 	
 	/**
-	 * Inserta los valores de una reserva en la tabla 'reservas'
-	 * @param codHotel Codigo del hotel en el que se efectua la reserva
-	 * @param precio Precio de la reserva
-	 * @param fecha2 
-	 * @param fecha1 
+	 * Inserta las habitaciones reservada en la tabla 'reserva_habitacion'
+	 * @param codReserva codigo de la reserva
+	 * @param codHabitacion codigo de la habitacion
+	 * @param cantidad cantidad de habitaciones de este tipo
 	 * @return ResultSet Resultado devuelto por la consulta
 	 */
 	public ResultSet insertarReservaHabitaciones(int codReserva, int codHabitacion, int cantidad) {
@@ -473,12 +481,12 @@ public class ModificarBBDD {
 	
 	/**
 	 * Inserta los datos del nuevo cliente en la tabla 'clientes'
-	 * @param dni
-	 * @param password
-	 * @param nombre
-	 * @param Apellidos
-	 * @param fechanac
-	 * @param mail
+	 * @param dni dni del cliente
+	 * @param password contraseña del usuario
+	 * @param nombre nombre del usuario
+	 * @param apellidos apellidos del usuario
+	 * @param fechanac fecha de nacimiento del usuario
+	 * @param mail email del usuario
 	 * @return true si hace el insert y false si no
 	 */
 	public ResultSet insertarCliente(String user, String dni, String password, String nombre, String apellidos, Date fechanac, String mail) {
@@ -513,6 +521,10 @@ public class ModificarBBDD {
 		return result;
 	}
 	
+	/**
+	 * Borra todas las reservas anteriores a la fecha indicada
+	 * @param fecha fecha de la reserva
+	 */
 	public void borrarReservas(Date fecha) {
 		CallableStatement stmt = null;
 		String query = "{?= call borrar_reserva(?)}";
